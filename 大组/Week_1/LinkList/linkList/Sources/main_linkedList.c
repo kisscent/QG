@@ -10,7 +10,6 @@ void showMenu() {
     int input;
     int error = 0;
     LinkedList list;
-    Status status;
     ElemType data;
 
     printf("单链表ADT\n\n"
@@ -32,11 +31,9 @@ void showMenu() {
             printf("输入你的选择：");
         }
         scanf("%d", &input);
-        fflush(stdin); // 清除输入缓冲区
         switch (input) {
             case 1:
-                status = InitList(&list);
-                if (status == SUCCESS)
+                if (InitList(&list) == SUCCESS)
                     printf("链表创建成功！\n");
                 else
                     printf("链表创建失败！\n");
@@ -48,8 +45,9 @@ void showMenu() {
             case 3:
                 printf("请输入要插入的元素值：");
                 scanf("%d", &data);
-                status = InsertList(list, newNode(data));
-                if (status == SUCCESS)
+                printf("请输入要在哪个结点前插入：");
+                scanf("%d", &input);
+                if (InsertList(list, newNode(data)) == SUCCESS)
                     printf("插入成功！\n");
                 else
                     printf("插入失败！\n");
@@ -57,8 +55,7 @@ void showMenu() {
             case 4:
                 printf("请输入要删除的元素值：");
                 scanf("%d", &data);
-                status = DeleteList(list, &data);
-                if (status == SUCCESS)
+                if (DeleteList(list, &data) == SUCCESS)
                     printf("删除成功！\n");
                 else
                     printf("删除失败！\n");
@@ -71,22 +68,19 @@ void showMenu() {
             case 6:
                 printf("请输入要查找的元素值：");
                 scanf("%d", &data);
-                status = SearchList(list, data);
-                if (status == SUCCESS)
+                if (SearchList(list, data) == SUCCESS)
                     printf("元素 %d 存在于链表中！\n", data);
                 else
                     printf("元素 %d 不存在于链表中！\n", data);
                 break;
             case 7:
-                status = ReverseList(&list);
-                if (status == SUCCESS)
+                if (ReverseList(&list) == SUCCESS)
                     printf("链表已反转！\n");
                 else
                     printf("链表反转失败！\n");
                 break;
             case 8:
-                status = IsLoopList(list);
-                if (status == SUCCESS)
+                if (IsLoopList(list) == SUCCESS)
                     printf("链表成环！\n");
                 else
                     printf("链表不成环！\n");
@@ -102,9 +96,11 @@ void showMenu() {
                 break;
             case 11:
                 return;
+            default:
+                error = 1;
+                continue;
         }
-        if (input >= 1 && input <= 11) error = 0;
-        else error = 1;
+        error = 0;
     }
 }
 
