@@ -40,3 +40,82 @@ Status DeleteList(LNode *p, ElemType *e) {
     return SUCCESS;
 }
 
+// 便历链表调用 visit 函数
+void TraverseList(LinkedList L, void (*visit)(ElemType e)) {
+    LNode *p = L->next;
+    while (p) {
+        visit(p->data); //调用
+        p = p->next; //便历
+    }
+}
+
+// 在链表中找到值为e的结点
+Status SearchList(LinkedList L, ElemType e) {
+    LNode *p = L->next;
+    while (p && p->data != e)
+        p = p->next; //便历找结点
+    if (p)
+        return SUCCESS;
+    else
+        return ERROR;
+}
+
+// 反转链表
+Status ReverseList(LinkedList *L) {
+    if (*L == NULL || (*L)->next == NULL)
+        return ERROR;
+    LNode *p = (*L)->next; //第一个结点
+    (*L)->next = NULL; //现在第一个结点为空
+    LNode *q;
+    while (p) {
+        q = p->next; //暂存
+        p->next = (*L)->next;
+        (*L)->next = p; //把p往头结点后插
+        p = q;
+    }
+    return SUCCESS;
+}
+
+//是否是循环链表
+Status IsLoopList(LinkedList L) {
+    LNode *slow = L, *fast = L;
+    // 同找中点，一个走两步，一个走一步，看有没有可能相等
+    while (fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+        if (slow == fast)
+            return SUCCESS;
+    }
+    return ERROR;
+}
+
+// 交换奇偶（跳过头结点）
+LNode *ReverseEvenList(LinkedList *L) {
+    if (*L == NULL || (*L)->next == NULL)
+        return *L;
+    LNode *last = *L; //暂存上一个
+    LNode *odd = (*L)->next; //寄,跳过头结点
+    LNode *even = odd->next; //偶
+    while (even && even->next) {
+        odd->next = even->next; //寄接后面
+        even->next = odd; //偶接寄前面
+        last->next = even;
+        last = odd;
+        odd = last->next; //下一个寄
+        even = odd->next; //下一个偶
+    }
+    return *L;
+}
+
+// 找中点
+LNode *FindMidNode(LinkedList *L) {
+    if (*L == NULL || (*L)->next == NULL)
+        return *L;
+    //一个走一步，一个走两步，快的走完，慢的就是中点
+    LNode *slow = *L, *fast = *L;
+    while (fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    return slow;
+}
