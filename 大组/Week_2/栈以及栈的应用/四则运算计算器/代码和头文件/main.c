@@ -1,4 +1,4 @@
-#include "../head/LinkStack.h"
+#include "../../栈/代码和头文件/head/LinkStack.h"
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>

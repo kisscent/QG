@@ -1,4 +1,5 @@
 #include "../head/LQueue.h" 
+#include <stdio.h>
 
 /**
  *  @name        : void InitLQueue(LQueue *Q)
@@ -6,8 +7,9 @@
  *    @param         Q 队列指针Q
  *  @notice      : None
  */
-void InitLQueue(LQueue *Q){
-	
+void InitLQueue(LQueue *Q) {
+    Q->front = Q->rear = NULL;
+    Q->length = 0;
 }
 
 /**
@@ -16,8 +18,15 @@ void InitLQueue(LQueue *Q){
  *    @param         Q 队列指针Q
  *  @notice      : None
  */
-void DestoryLQueue(LQueue *Q){
-	
+void DestoryLQueue(LQueue *Q) {
+    Node *p;
+    while (Q->front != NULL) {
+        p = Q->front;
+        Q->front = Q->front->next;
+        free(p);
+    }
+    Q->rear = NULL;
+    Q->length = 0;
 }
 
 /**
@@ -27,8 +36,8 @@ void DestoryLQueue(LQueue *Q){
  *    @return         : 空-TRUE; 未空-FALSE
  *  @notice      : None
  */
-Status IsEmptyLQueue(const LQueue *Q){
-	
+Status IsEmptyLQueue(const LQueue *Q) {
+    return Q->front == NULL ? TRUE : FALSE;
 }
 
 /**
@@ -38,8 +47,12 @@ Status IsEmptyLQueue(const LQueue *Q){
  *    @return         : 成功-TRUE; 失败-FALSE
  *  @notice      : 队列是否空
  */
-Status GetHeadLQueue(LQueue *Q, void *e){
-	
+Status GetHeadLQueue(LQueue *Q, void *e) {
+    if (IsEmptyLQueue(Q)) {
+        return FALSE;
+    }
+    *((void **)e) = Q->front->data;
+    return TRUE;
 }
 
 /**
@@ -49,8 +62,8 @@ Status GetHeadLQueue(LQueue *Q, void *e){
  *    @return         : 成功-TRUE; 失败-FALSE
  *  @notice      : None
  */
-int LengthLQueue(LQueue *Q){
-	
+int LengthLQueue(LQueue *Q) {
+    return Q->length;
 }
 
 /**
@@ -60,8 +73,21 @@ int LengthLQueue(LQueue *Q){
  *    @return         : 成功-TRUE; 失败-FALSE
  *  @notice      : 队列是否为空
  */
-Status EnLQueue(LQueue *Q, void *data){
-	
+Status EnLQueue(LQueue *Q, void *data) {
+    Node *p = (Node *)malloc(sizeof(Node));
+    if (p == NULL) {
+        return FALSE; // Allocation failed
+    }
+    p->data = data;
+    p->next = NULL;
+    if (Q->rear == NULL) {
+        Q->front = Q->rear = p;
+    } else {
+        Q->rear->next = p;
+        Q->rear = p;
+    }
+    Q->length++;
+    return TRUE;
 }
 
 /**
@@ -71,8 +97,18 @@ Status EnLQueue(LQueue *Q, void *data){
  *    @return         : 成功-TRUE; 失败-FALSE
  *  @notice      : None
  */
-Status DeLQueue(LQueue *Q){
-	
+Status DeLQueue(LQueue *Q) {
+    if (IsEmptyLQueue(Q)) {
+        return FALSE;
+    }
+    Node *p = Q->front;
+    Q->front = Q->front->next;
+    if (Q->front == NULL) {
+        Q->rear = NULL;
+    }
+    free(p);
+    Q->length--;
+    return TRUE;
 }
 
 /**
@@ -81,8 +117,8 @@ Status DeLQueue(LQueue *Q){
  *    @param         Q 队列指针Q
  *  @notice      : None
  */
-void ClearLQueue(LQueue *Q){
-	
+void ClearLQueue(LQueue *Q) {
+    DestoryLQueue(Q);
 }
 
 /**
@@ -92,8 +128,16 @@ void ClearLQueue(LQueue *Q){
  *    @return         : None
  *  @notice      : None
  */
-Status TraverseLQueue(const LQueue *Q, void (*foo)(void *q)){
-	
+Status TraverseLQueue(const LQueue *Q, void (*foo)(void *q)) {
+    if (Q == NULL || foo == NULL) {
+        return FALSE;
+    }
+    Node *p = Q->front;
+    while (p != NULL) {
+        foo(p->data);
+        p = p->next;
+    }
+    return TRUE;
 }
 
 /**
@@ -103,13 +147,7 @@ Status TraverseLQueue(const LQueue *Q, void (*foo)(void *q)){
  
  *  @notice      : None
  */
-void LPrint(void *q){
-	
+void LPrint(void *q) {
+    printf("%s ", (char *)q);
 }
-
-/**************************************************************
- *    End-Multi-Include-Prevent Section
- **************************************************************/
-#endif // LQUEUE_H_INCLUDED
-
 
